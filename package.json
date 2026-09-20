@@ -1,0 +1,21 @@
+{
+  "name": "taskflow",
+  "private": true,
+  "version": "0.1.0",
+  "workspaces": ["apps/*", "packages/*"],
+  "scripts": {
+    "dev": "concurrently -n web,api -c cyan,magenta \"npm run dev -w @taskflow/web\" \"npm run dev -w @taskflow/api\"",
+    "dev:web": "npm run dev -w @taskflow/web",
+    "dev:api": "npm run dev -w @taskflow/api",
+    "db:up": "docker compose up -d",
+    "db:migrate": "npm run prisma:migrate -w @taskflow/api",
+    "db:seed": "npm run prisma:seed -w @taskflow/api",
+    "lint": "npm run lint -w @taskflow/web && npm run lint -w @taskflow/api"
+  },
+  "devDependencies": {
+    "concurrently": "^9.1.2"
+  },
+  "engines": {
+    "node": ">=20"
+  }
+}
