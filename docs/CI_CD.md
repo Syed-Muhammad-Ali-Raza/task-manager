@@ -5,7 +5,7 @@
 `.github/workflows/ci.yml` runs on every pull request and push to `main`:
 
 1. Install dependencies from `package-lock.json`.
-2. Generate the Prisma Client.
+2. Build the shared Zod/type package and generate the Prisma Client.
 3. Lint both workspaces.
 4. Typecheck both workspaces.
 5. Run API integration tests.

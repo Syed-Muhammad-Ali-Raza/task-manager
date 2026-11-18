@@ -16,7 +16,7 @@
     "lint": "npm run lint -w @taskflow/web && npm run lint -w @taskflow/api",
     "typecheck": "npm run typecheck -w @taskflow/web && npm run typecheck -w @taskflow/api",
     "test": "npm run test -w @taskflow/api",
-    "vercel-build": "npm run prisma:generate -w @taskflow/api"
+    "vercel-build": "npm run build -w @taskflow/shared && npm run prisma:generate -w @taskflow/api"
   },
   "devDependencies": {
     "concurrently": "^9.1.2"

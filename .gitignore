@@ -5,6 +5,8 @@ coverage
 .env
 .env.local
 .env.vercel*
+.vercel
+packages/shared/dist
 *.log
 *.tsbuildinfo
 .DS_Store
@@ -12,3 +14,4 @@ apps/api/prisma/migrations/**/migration_lock.toml
 apps/web/.next
 apps/api/uploads
 !apps/api/uploads/.gitkeep
+.env*

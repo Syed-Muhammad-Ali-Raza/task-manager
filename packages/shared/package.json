@@ -2,10 +2,12 @@
   "name": "@taskflow/shared",
   "version": "0.1.0",
   "private": true,
-  "main": "./src/index.ts",
-  "types": "./src/index.ts",
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
   "scripts": {
-    "lint": "echo \"shared ok\""
+    "build": "tsc -p tsconfig.json",
+    "prepare": "npm run build",
+    "lint": "npm run build"
   },
   "dependencies": {
     "zod": "^4.6.7"
