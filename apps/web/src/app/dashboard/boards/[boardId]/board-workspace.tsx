@@ -44,10 +44,16 @@ export function BoardWorkspace({ initial }: { initial: Board }) {
 
   async function moveTask(taskId: string, listId: string) {
     try {
-      await apiCall(`/api/tasks/${taskId}`, {
+      const updated = await apiCall<KanbanTask>(`/api/tasks/${taskId}`, {
         method: "PATCH",
         body: JSON.stringify({ listId }),
       });
+      setBoard((current) => ({
+        ...current,
+        tasks: current.tasks.map((task) =>
+          task.id === taskId ? { ...task, ...updated } : task,
+        ),
+      }));
     } catch (err) {
       setError(err instanceof Error ? err.message : "Could not move task");
       await reload();
