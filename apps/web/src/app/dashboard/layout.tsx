@@ -1,7 +1,16 @@
+import type { Metadata } from "next";
 import { Sidebar } from "@/components/dashboard/Sidebar";
 import { getSessionUser, serverApi } from "@/lib/server-api";
 
 export const dynamic = "force-dynamic";
+
+export const metadata: Metadata = {
+  title: "Workspace dashboard",
+  robots: {
+    index: false,
+    follow: false,
+  },
+};
 
 type Space = {
   id: string;

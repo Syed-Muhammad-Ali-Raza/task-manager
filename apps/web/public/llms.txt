@@ -1,0 +1,31 @@
+# TaskFlow
+
+> Collaborative task management with Jira-style boards, workspace roles, comments, attachments, and secure cookie sessions. Built with Next.js App Router and Express.
+
+TaskFlow is a portfolio-grade SaaS app for teams that want a focused kanban board: columns, priorities, flags, keyboard-friendly drag and drop, task detail panels, workspaces, and member roles. Authentication uses httpOnly cookies through a Next.js backend-for-frontend; tokens are never stored in browser localStorage.
+
+## Key facts
+
+- Product name: TaskFlow
+- Category: collaborative task management / kanban software
+- Stack: Next.js 15 (App Router), React 19, Express 4, Prisma, Zod, PostgreSQL or in-memory demo store
+- Public site: /
+- Sign in: /login
+- Demo owner: Syed Ali, syed.ali@taskflow.dev
+- Structured data: WebSite, Organization, SoftwareApplication on /
+- Crawler rules: /robots.txt
+- Sitemap: /sitemap.xml
+
+## Public pages
+
+- / — product overview and interactive board preview
+- /login — sign in to the dashboard
+
+## Documentation
+
+- /AGENTS.md — instructions for coding agents
+- /docs/PROJECT_ARCHITECTURE.md — architecture and request flows
+- /docs/DEVELOPERS.md — auth cookies, SSR, drag-and-drop notes
+- /docs/agent-skills/seo/SKILL.md — SEO guidance
+- /docs/agent-skills/geo-aeo/SKILL.md — generative and answer engine guidance
+- /docs/agent-skills/accessibility-performance/SKILL.md — inclusive UI and performance guidance
