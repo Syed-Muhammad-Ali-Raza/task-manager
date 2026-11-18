@@ -1,104 +1,109 @@
-# Deploy TaskFlow for free
+# Deploy TaskFlow for free (no credit card)
 
-This deploys TaskFlow on two free tiers. No credit card, no paid database.
+TaskFlow runs on free tiers only:
 
 | Part | Platform | Plan | URL shape |
 | --- | --- | --- | --- |
-| Next.js web app | Vercel | Hobby ($0) | `https://<project>.vercel.app` |
-| Express API | Render | Free web service ($0) | `https://<service>.onrender.com` |
+| Next.js web app | Vercel Hobby | $0 | `https://<web-project>.vercel.app` |
+| Express API | Vercel serverless | $0 | `https://<api-project>.vercel.app` |
+| Postgres | Neon Free | $0 | Managed PostgreSQL |
 
-Both platforms deploy from your GitHub repo, so pushing a commit redeploys automatically.
+Both Vercel projects deploy automatically from the same GitHub repository. Pushing to `main` deploys production; pushing another branch creates a preview.
 
-> **Free-tier limits:** Render free services spin down after about 15 minutes of inactivity, so the first request after a pause can take up to a minute. With `USE_IN_MEMORY=true`, demo data resets whenever the API sleeps or redeploys. That is expected for a free demo — do not store real data here.
+> Render is not used: its free web-service signup currently asks for card verification, which conflicts with the no-card requirement.
 
-## Before you start
+## Free-tier limits
 
-- Make sure the commit that adds `render.yaml` is pushed to your default branch on GitHub.
-- Have your GitHub repository URL ready (for example `https://github.com/<you>/task-manager`).
-- Demo login: `syed.ali@taskflow.dev` / `demo1234`.
+- Neon free projects pause after inactivity and wake on the next connection; the first request can be slower.
+- Vercel Hobby has fair-use limits and is not for commercial traffic.
+- Uploaded attachments are not durable in serverless mode. The local in-memory demo supports attachments; the Postgres deployment returns `501` for that endpoint until object storage is added.
+- Rate limits are per serverless instance. They stop bursts and basic brute force, not a distributed fleet-wide attack. See [architecture decisions](ARCHITECTURE_DECISIONS.md).
 
-## 1. Deploy the API on Render
+## 1. Prepare the Neon database
 
-1. Open <https://dashboard.render.com/> and sign in.
-2. Click **New** → **Blueprint**.
-3. Select your GitHub repository. If GitHub is not connected yet, connect it and allow access to that repository.
-4. Render detects `render.yaml` at the repo root. Review the single `taskflow-api` service, confirm the plan is **Free**, then click **Apply**.
-5. Wait for the first build to finish. The service page shows a URL like `https://taskflow-api-xxxx.onrender.com`.
-6. Verify the API: open `<your Render URL>/health`. You should see:
+1. Sign in at <https://console.neon.tech/> and create a project.
+2. Keep the default `neondb` database and region close to your users.
+3. In **Connection details**, copy both:
+   - the pooled connection string (used as `DATABASE_URL`)
+   - the direct connection string (used as `DIRECT_URL`)
+4. Apply `apps/api/prisma/schema.prisma` to the database. From the repository root:
 
-   ```json
-   {"status":"ok","db":"memory"}
+   ```bash
+   cd apps/api
+   npx prisma db push
+   npx prisma db seed
    ```
 
-7. Copy the Render URL **without a trailing slash**. You need it in the next step.
+   `DIRECT_URL` is required by Prisma schema commands. The app uses the pooled `DATABASE_URL` at runtime.
 
-The blueprint sets `NODE_VERSION=22`, `USE_IN_MEMORY=true`, and generates a random `JWT_SECRET`. It does not create a database.
+Never commit either connection string. Only placeholders belong in `.env.example`.
 
-## 2. Deploy the web app on Vercel
+## 2. Deploy the API to Vercel
 
-1. Open <https://vercel.com/new> and sign in.
-2. Click **Import** next to the same GitHub repository.
-3. On the import screen:
-   - **Project Name:** pick a name, for example `taskflow`. The production domain shown on this screen (for example `https://taskflow.vercel.app`) is your `NEXT_PUBLIC_APP_URL` — copy it.
-   - **Framework Preset:** Next.js (detected automatically).
-   - Click **Edit** next to **Root Directory** and enter `apps/web`.
-   - Leave **Build Command** and **Output Directory** at their defaults (`npm run build` and `.next`).
-4. Expand **Environment Variables** and add:
-
-   | Name | Value |
-   | --- | --- |
-   | `API_URL` | the Render URL from step 1 |
-   | `NEXT_PUBLIC_API_URL` | the same Render URL |
-   | `NEXT_PUBLIC_APP_URL` | your Vercel URL |
-
-   Use `https://`, no trailing slash, no quotes.
-
-5. Click **Deploy** and wait for the build.
-6. Open your Vercel URL — the marketing page should load.
-
-`API_URL` is used by the login route, the proxy, and server components. `NEXT_PUBLIC_API_URL` is a fallback for the same value. `NEXT_PUBLIC_APP_URL` is used for canonical URLs, `robots.txt`, `sitemap.xml`, and structured data.
-
-## 3. Point the API back at Vercel
-
-1. On Render, open `taskflow-api` → **Environment** in the left sidebar.
-2. Add these two variables and choose **Save and deploy**:
+1. Open <https://vercel.com/new> and import `Syed-Muhammad-Ali-Raza/task-manager`.
+2. Set **Root Directory** to `apps/api`.
+3. Use Framework Preset **Other**, Node.js 22, and these settings:
+   - Build Command: `npm run vercel-build`
+   - Output Directory: leave empty
+   - Install Command: leave empty (npm workspaces are detected)
+4. Add these Environment Variables for **Production**, **Preview**, and **Development**:
 
    | Name | Value |
    | --- | --- |
-   | `CORS_ORIGIN` | your Vercel URL |
-   | `FRONTEND_URL` | your Vercel URL |
+   | `DATABASE_URL` | Pooled Neon connection string |
+   | `DIRECT_URL` | Direct Neon connection string |
+   | `JWT_SECRET` | Long random string (different from development) |
+   | `USE_IN_MEMORY` | `false` |
+   | `CORS_ORIGIN` | Web project URL from step 3 |
+   | `FRONTEND_URL` | Web project URL from step 3 |
 
-   `FRONTEND_URL` builds invitation links. `CORS_ORIGIN` allows direct browser calls to the API if you ever need them.
+   Leave `CORS_ORIGIN` and `FRONTEND_URL` as `http://localhost:3000` for the first deploy, then update them after the web project exists.
 
-3. Wait for the redeploy to finish.
+5. Deploy. `apps/api/vercel.json` rewrites all requests to the Express handler in `apps/api/api/index.ts`.
 
-## 4. Verify
+Verify:
 
-- [ ] `<Render URL>/health` returns `{"status":"ok","db":"memory"}`
-- [ ] `<Vercel URL>/` shows the marketing page
-- [ ] `<Vercel URL>/login` works with `syed.ali@taskflow.dev` / `demo1234`
-- [ ] `<Vercel URL>/dashboard` shows the workspace after sign-in
-- [ ] A new task survives a page reload (until the API restarts)
-- [ ] `<Vercel URL>/robots.txt`, `/sitemap.xml`, and `/llms.txt` load, and the sitemap uses the Vercel URL
-- [ ] View source on the home page and confirm JSON-LD URLs use the Vercel URL
+```text
+GET https://<api-project>.vercel.app/health
+```
 
-## Troubleshooting
+Expected: `{"status":"ok","db":"up"}`.
 
-- **"Could not sign in":** the Render service may be asleep. Open `/health` first to wake it, wait for the JSON response, then try again.
-- **Vercel build fails on a missing package:** confirm **Root Directory** is `apps/web`. This repo is an npm workspace monorepo.
-- **API returns 502 or times out:** check the Render service is awake and its logs end with `TaskFlow API on http://...`.
-- **Canonical or sitemap URLs say localhost:** `NEXT_PUBLIC_APP_URL` is missing or has a trailing slash. Fix it in Vercel and redeploy.
-- **Login works but redirects/broken links:** set `FRONTEND_URL` on Render and redeploy.
+## 3. Deploy the web app to Vercel
 
-## Keeping it free
+1. Open <https://vercel.com/new> again and import the same repository.
+2. Set **Root Directory** to `apps/web`.
+3. Use the detected Next.js preset and Node.js 22.
+4. Add these Environment Variables:
 
-- Stay on Vercel **Hobby** and Render **Free**. Do not add a paid database, Redis, or other paid add-ons.
-- Render includes 750 free instance-hours/month and 5 GB outbound bandwidth; Vercel Hobby is $0.
-- Both free tiers are intended for personal projects and prototypes. Check the current provider terms if you plan to use this commercially.
+   | Name | Value |
+   | --- | --- |
+   | `API_URL` | `https://<api-project>.vercel.app` |
+   | `NEXT_PUBLIC_API_URL` | Same API URL |
+   | `NEXT_PUBLIC_APP_URL` | `https://<web-project>.vercel.app` |
 
-## Local development is unchanged
+5. Deploy, then copy the web URL into the API project's `CORS_ORIGIN` and `FRONTEND_URL`, and redeploy the API.
+
+## 4. Verify the live app
+
+- `/` — public marketing page, indexable.
+- `/login` — public sign-in page.
+- `/robots.txt` — blocks `/dashboard`, `/api/`, and `/invite/`.
+- `/sitemap.xml` — only public pages.
+- `/llms.txt` — AI-friendly product summary.
+- Sign in with `syed.ali@taskflow.dev` / `demo1234`.
+- `/dashboard` — server-rendered workspace and board data.
+
+## 5. Continuous delivery
+
+Vercel handles CD from GitHub. The repository workflow in `.github/workflows/ci.yml` checks lint, types, tests, the production dependency audit, and the web build on every push and pull request.
+
+Useful checks locally:
 
 ```bash
-npm install
-npm run dev   # web http://localhost:3000, API http://localhost:3001
+npm run lint
+npm run typecheck
+npm test
+npm run build -w @taskflow/web
+npm audit --omit=dev
 ```

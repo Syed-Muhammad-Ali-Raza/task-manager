@@ -1,16 +1,5 @@
 import type { Metadata, Viewport } from "next";
-import { Bricolage_Grotesque, Source_Sans_3 } from "next/font/google";
 import "./globals.css";
-
-const display = Bricolage_Grotesque({
-  subsets: ["latin"],
-  variable: "--font-display",
-});
-
-const sans = Source_Sans_3({
-  subsets: ["latin"],
-  variable: "--font-sans",
-});
 
 const siteUrl =
   process.env.NEXT_PUBLIC_APP_URL ?? process.env.NEXTAUTH_URL ?? "http://localhost:3000";
@@ -73,7 +62,7 @@ export const viewport: Viewport = {
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="en">
-      <body className={`${display.variable} ${sans.variable} font-sans antialiased`}>{children}</body>
+      <body className="font-sans antialiased">{children}</body>
     </html>
   );
 }

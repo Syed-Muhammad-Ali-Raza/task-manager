@@ -8,7 +8,7 @@ TaskFlow is a portfolio-grade SaaS app for teams that want a focused kanban boar
 
 - Product name: TaskFlow
 - Category: collaborative task management / kanban software
-- Stack: Next.js 15 (App Router), React 19, Express 4, Prisma, Zod, PostgreSQL or in-memory demo store
+- Stack: Next.js 16 (App Router), React 19, Express 4, Prisma, Zod, Neon PostgreSQL or in-memory demo store
 - Public site: /
 - Sign in: /login
 - Demo owner: Syed Ali, syed.ali@taskflow.dev

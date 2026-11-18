@@ -45,7 +45,7 @@ Express also accepts a Bearer token or a `tf_access` cookie, so the API stays us
 | `/dashboard/boards/[id]` | RSC `serverApi('/api/boards/:id')` then client DnD |
 | `/dashboard` layout | RSC `GET /api/auth/me` for the sidebar |
 
-Middleware blocks `/dashboard/*` when `tf_access` is missing.
+The Next 16 `proxy.ts` blocks `/dashboard/*` when `tf_access` is missing.
 
 ## Kanban drag and drop
 
@@ -71,4 +71,6 @@ Do not put tokens, user records, or board state in `localStorage`.
 
 ## Env
 
-See `.env.example`. Web needs `NEXT_PUBLIC_API_URL` / `API_URL` for the server-side fetch to Express (`http://localhost:3001`).
+See `.env.example`. Web needs `NEXT_PUBLIC_API_URL` / `API_URL` for the server-side fetch to Express (`http://localhost:3001`). Hosted API deployments also need `DATABASE_URL`, `DIRECT_URL`, a production `JWT_SECRET`, and `USE_IN_MEMORY=false`.
+
+For the free no-card deployment, see [DEPLOY_FREE.md](DEPLOY_FREE.md). Operational decisions (rate limits, caching, queues) are in [ARCHITECTURE_DECISIONS.md](ARCHITECTURE_DECISIONS.md).

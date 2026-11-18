@@ -4,13 +4,9 @@ Collaborative task management SaaS (portfolio). Next.js frontend, Express API, P
 
 ## Run locally
 
-1. Start Postgres (Docker Desktop required):
+Docker is optional; the API defaults to an in-memory demo store.
 
-```bash
-docker compose up -d
-```
-
-2. Install, migrate, seed, start:
+1. Install, migrate, seed, and start (migrate/seed are only needed for Postgres mode):
 
 ```bash
 npm install
@@ -21,7 +17,7 @@ cd ../..
 npm run dev
 ```
 
-3. Open http://localhost:3000
+2. Open http://localhost:3000
 
 Demo login: `syed.ali@taskflow.dev` / `demo1234` (owner: Syed Ali)
 
@@ -29,6 +25,8 @@ Demo login: `syed.ali@taskflow.dev` / `demo1234` (owner: Syed Ali)
 - API health: http://localhost:3001/health
 
 Developer notes (auth cookies, SSR, drag-and-drop): [docs/DEVELOPERS.md](docs/DEVELOPERS.md)
+
+Deploy for free with Vercel and Neon: [docs/DEPLOY_FREE.md](docs/DEPLOY_FREE.md). CI/CD details: [docs/CI_CD.md](docs/CI_CD.md).
 
 ## Layout
 

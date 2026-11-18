@@ -23,9 +23,18 @@ function listIdForStatus(boardId: string, status: string) {
 export const taskRouter = Router();
 taskRouter.use(authMiddleware);
 
+const isServerless = process.env.VERCEL === "1";
 const uploadDir = path.join(process.cwd(), "uploads");
-fs.mkdirSync(uploadDir, { recursive: true });
-const upload = multer({ dest: uploadDir, limits: { fileSize: 25 * 1024 * 1024 } });
+const uploadLimits = { fileSize: 25 * 1024 * 1024 };
+
+if (!isServerless) {
+  fs.mkdirSync(uploadDir, { recursive: true });
+}
+
+// Serverless filesystems are read-only, so keep the temporary upload in memory.
+const upload = isServerless
+  ? multer({ storage: multer.memoryStorage(), limits: uploadLimits })
+  : multer({ dest: uploadDir, limits: uploadLimits });
 
 taskRouter.get("/boards/:boardId", async (req: AuthedRequest, res, next) => {
   try {

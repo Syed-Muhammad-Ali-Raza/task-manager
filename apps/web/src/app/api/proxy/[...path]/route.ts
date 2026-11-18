@@ -27,6 +27,7 @@ async function proxy(request: NextRequest, path: string[]) {
     status: response.status,
     headers: {
       "content-type": response.headers.get("content-type") ?? "application/octet-stream",
+      "cache-control": response.headers.get("cache-control") ?? "no-store",
     },
   });
 }

@@ -6,10 +6,11 @@ This document explains how the repository is put together and where to make chan
 
 | Layer | Technology | Location |
 | --- | --- | --- |
-| Web UI | Next.js 15 App Router, React 19, Tailwind CSS | `apps/web` |
+| Web UI | Next.js 16 App Router, React 19, Tailwind CSS | `apps/web` |
 | API | Express 4, Zod, JWT, Prisma | `apps/api` |
 | Shared contracts | Zod schemas + TypeScript types | `packages/shared` |
-| Local data | In-process memory store (default) or Postgres via Docker | `apps/api/src/store/memory.ts`, `apps/api/prisma/schema.prisma` |
+| Local data | In-process memory store (default) | `apps/api/src/store/memory.ts` |
+| Hosted data | Neon Postgres (Free) via Prisma | `apps/api/prisma/schema.prisma` |
 | Dev orchestration | npm workspaces + concurrently | root `package.json` |
 
 ## Directory map
@@ -18,22 +19,25 @@ This document explains how the repository is put together and where to make chan
 task-manager/
 ├── apps/
 │   ├── api/
+│   │   ├── api/index.ts            # Vercel serverless handler
 │   │   ├── prisma/                 # schema + seed for Postgres mode
 │   │   └── src/
 │   │       ├── config/             # env + Prisma client
-│   │       ├── middleware/         # auth, errors
+│   │       ├── middleware/         # auth, errors, rate limiting
 │   │       ├── routes/             # auth, workspaces, tasks, invitations
 │   │       ├── store/memory.ts     # seeded demo data for USE_IN_MEMORY=true
-│   │       └── index.ts            # Express app + /health
+│   │       ├── app.ts              # Express app factory + /health
+│   │       └── index.ts            # local server entrypoint
 │   └── web/
 │       ├── public/                 # icon.svg, llms.txt
 │       └── src/
+│           ├── proxy.ts             # Next 16 route guard (replaces middleware.ts)
 │           ├── app/
 │           │   ├── api/            # Next.js BFF: /session/*, /proxy/*
 │           │   ├── dashboard/      # authenticated app (RSC + client islands)
 │           │   ├── invite/         # public invitation join flow
 │           │   ├── login/          # public sign-in page
-│           │   ├── layout.tsx      # global metadata, fonts
+│           │   ├── layout.tsx      # global metadata, system font stack
 │           │   ├── page.tsx        # marketing homepage + JSON-LD
 │           │   ├── robots.ts       # crawler rules
 │           │   └── sitemap.ts      # public URLs
@@ -45,6 +49,9 @@ task-manager/
 │               ├── api.ts          # client-side calls to /api/proxy/*
 │               └── server-api.ts   # RSC calls to Express with Bearer token
 ├── docs/
+│   ├── ARCHITECTURE_DECISIONS.md   # rate limits, caching, queues
+│   ├── CI_CD.md                    # CI checks + Vercel CD
+│   ├── DEPLOY_FREE.md              # Vercel + Neon deployment guide
 │   ├── DEVELOPERS.md               # auth cookies, SSR, drag-and-drop notes
 │   ├── PROJECT_ARCHITECTURE.md     # this file
 │   └── agent-skills/               # focused guides for coding agents
@@ -64,7 +71,9 @@ task-manager/
                                  ▼
                     ┌──────────────────────────┐
                     │ Express (apps/api)       │
-                    │  - Zod validation        │
+                    │  - security headers      │
+                     │  - rate limits           │
+                     │  - Zod validation        │
                     │  - auth + membership     │
                     │  - /api/* routes         │
                     └────────────┬─────────────┘
@@ -84,7 +93,7 @@ The JWT is set as an httpOnly `tf_access` cookie by `apps/web/src/app/api/sessio
 2. The Next.js handler calls Express `POST /api/auth/login`.
 3. Express verifies the password and returns a JWT.
 4. Next.js sets `tf_access` as httpOnly, `SameSite=Lax` (Secure in production).
-5. `/dashboard` middleware checks for the cookie before rendering.
+5. The Next 16 `proxy.ts` checks for the cookie before rendering `/dashboard`.
 
 ### Server-rendered reads
 
@@ -111,14 +120,14 @@ Core entities in `apps/api/prisma/schema.prisma`:
 - `Task` — board/list, title, description, key, priority, status, assignee, labels, due date, attachments.
 - `Comment`, `Attachment`, `Invitation` — task discussion, uploads, and workspace joins.
 
-The in-memory store mirrors these shapes with seeded demo data (`user_demo`, `board_launch`, six tasks, two users). It is intentionally simple and resets on restart.
+The in-memory store mirrors these shapes with seeded demo data. It is intentionally simple and resets on restart. The hosted Neon database has the same schema plus a seeded demo user and board.
 
 ## Configuration
 
 Root env template: `.env.example`.
 
-- `apps/api/.env`: `DATABASE_URL`, `PORT`, `JWT_SECRET`, `CORS_ORIGIN`, `USE_IN_MEMORY`.
-- `apps/web/.env.local`: `NEXT_PUBLIC_API_URL`, `API_URL`, `NEXT_PUBLIC_APP_URL` (used for canonical URLs, sitemap, and robots).
+- `apps/api/.env`: `DATABASE_URL`, `DIRECT_URL`, `PORT`, `JWT_SECRET`, `CORS_ORIGIN`, `FRONTEND_URL`, `USE_IN_MEMORY`, optional rate-limit overrides.
+- `apps/web/.env.local`: `API_URL`, `NEXT_PUBLIC_API_URL`, `NEXT_PUBLIC_APP_URL` (used for canonical URLs, sitemap, and robots).
 
 `NEXT_PUBLIC_APP_URL` should be the public origin of the web app, e.g. `https://taskflow.example.com` in production or `http://localhost:3002` for local testing on that port.
 
@@ -132,6 +141,13 @@ Root env template: `.env.example`.
 - Favicon: `apps/web/public/icon.svg`.
 
 Guidance for agents lives in `docs/agent-skills/`.
+
+## Deployment and operations
+
+- [DEPLOY_FREE.md](DEPLOY_FREE.md) — Vercel + Neon no-card deployment.
+- [CI_CD.md](CI_CD.md) — CI checks and Vercel git-based CD.
+- [ARCHITECTURE_DECISIONS.md](ARCHITECTURE_DECISIONS.md) — rate limiting, caching, and why there is no queue yet.
+- [SECURITY.md](../SECURITY.md) — vulnerability reporting and security controls.
 
 ## Where to make common changes
 

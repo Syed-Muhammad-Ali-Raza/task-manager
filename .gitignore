@@ -4,6 +4,7 @@ dist
 coverage
 .env
 .env.local
+.env.vercel*
 *.log
 *.tsbuildinfo
 .DS_Store

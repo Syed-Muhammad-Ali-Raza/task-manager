@@ -11,7 +11,7 @@ export async function apiCall<T>(endpoint: string, options: RequestInit = {}): P
   });
 
   if (response.status === 401 && typeof window !== "undefined") {
-    window.location.href = "/login";
+    window.location.assign("/login");
     throw new Error("Unauthorized");
   }
 
@@ -69,7 +69,7 @@ export async function uploadFile<T>(endpoint: string, file: File, extra?: Record
     body: data,
   });
   if (response.status === 401 && typeof window !== "undefined") {
-    window.location.href = "/login";
+    window.location.assign("/login");
     throw new Error("Unauthorized");
   }
   if (!response.ok) {
