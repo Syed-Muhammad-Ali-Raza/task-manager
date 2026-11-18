@@ -1,0 +1,17 @@
+# Free-tier Render Blueprint for the TaskFlow Express API.
+# Deploy with Render Dashboard → New → Blueprint. See docs/DEPLOY_FREE.md.
+services:
+  - type: web
+    name: taskflow-api
+    runtime: node
+    plan: free
+    buildCommand: npm ci && npm run prisma:generate -w @taskflow/api
+    startCommand: npm run start -w @taskflow/api
+    healthCheckPath: /health
+    envVars:
+      - key: NODE_VERSION
+        value: "22"
+      - key: USE_IN_MEMORY
+        value: "true"
+      - key: JWT_SECRET
+        generateValue: true

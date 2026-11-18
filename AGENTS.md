@@ -65,7 +65,7 @@ These are short, task-focused guides for agents working in this repo:
 - [GEO/AEO skill](docs/agent-skills/geo-aeo/SKILL.md) — generative-engine and answer-engine optimization.
 - [Accessibility & performance skill](docs/agent-skills/accessibility-performance/SKILL.md) — inclusive UI and Core Web Vitals.
 
-Also see [docs/DEVELOPERS.md](docs/DEVELOPERS.md) for auth cookies, SSR, and drag-and-drop notes.
+Also see [docs/DEVELOPERS.md](docs/DEVELOPERS.md) for auth cookies, SSR, and drag-and-drop notes, and [docs/DEPLOY_FREE.md](docs/DEPLOY_FREE.md) for the free Vercel + Render deployment setup.
 
 ## Known constraints
 
