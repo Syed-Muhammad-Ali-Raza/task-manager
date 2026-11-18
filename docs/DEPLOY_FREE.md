@@ -69,7 +69,7 @@ Expected: `{"status":"ok","db":"up"}`.
 ## 3. Deploy the web app to Vercel
 
 1. Open <https://vercel.com/new> again and import the same repository.
-2. Set **Root Directory** to `apps/web`.
+2. Set **Root Directory** to `apps/web`. The `apps/web/vercel.json` keeps Next.js detection scoped to that directory.
 3. Use the detected Next.js preset and Node.js 22.
 4. Add these Environment Variables:
 
