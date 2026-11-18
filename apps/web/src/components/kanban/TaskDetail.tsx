@@ -1,6 +1,6 @@
 "use client";
 
-import { FormEvent, useEffect, useState } from "react";
+import { FormEvent, useCallback, useEffect, useState } from "react";
 import { apiCall, uploadFile } from "@/lib/api";
 import type { KanbanTask } from "./types";
 
@@ -33,15 +33,15 @@ export function TaskDetail({ taskId, onClose, onUpdated }: { taskId: string; onC
   const [error, setError] = useState("");
   const [saving, setSaving] = useState(false);
 
-  async function load() {
+  const load = useCallback(async () => {
     const data = await apiCall<TaskDetailData>(`/api/tasks/${taskId}`);
     setTask(data);
     setDescription(data.description ?? "");
-  }
+  }, [taskId]);
 
   useEffect(() => {
     load().catch((err) => setError(err instanceof Error ? err.message : "Could not load task"));
-  }, [taskId]);
+  }, [load]);
 
   async function saveDescription() {
     setSaving(true);

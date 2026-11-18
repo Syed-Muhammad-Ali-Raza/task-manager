@@ -2,7 +2,10 @@
   "name": "taskflow",
   "private": true,
   "version": "0.1.0",
-  "workspaces": ["apps/*", "packages/*"],
+  "workspaces": [
+    "apps/*",
+    "packages/*"
+  ],
   "scripts": {
     "dev": "concurrently -n web,api -c cyan,magenta \"npm run dev -w @taskflow/web\" \"npm run dev -w @taskflow/api\"",
     "dev:web": "npm run dev -w @taskflow/web",
@@ -10,7 +13,9 @@
     "db:up": "docker compose up -d",
     "db:migrate": "npm run prisma:migrate -w @taskflow/api",
     "db:seed": "npm run prisma:seed -w @taskflow/api",
-    "lint": "npm run lint -w @taskflow/web && npm run lint -w @taskflow/api"
+    "lint": "npm run lint -w @taskflow/web && npm run lint -w @taskflow/api",
+    "typecheck": "npm run typecheck -w @taskflow/web && npm run typecheck -w @taskflow/api",
+    "test": "npm run test -w @taskflow/api"
   },
   "devDependencies": {
     "concurrently": "^9.1.2"
@@ -19,6 +24,10 @@
     "node": ">=20"
   },
   "allowScripts": {
-    "esbuild@0.28.2": true
+    "esbuild@0.28.2": true,
+    "prisma@6.19.3": true,
+    "@prisma/client@6.19.3": true,
+    "@prisma/engines": true,
+    "unrs-resolver@1.12.2": true
   }
 }

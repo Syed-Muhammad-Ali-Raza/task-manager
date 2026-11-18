@@ -30,7 +30,9 @@ cd apps/web && npx next dev --port 3002
 
 Docker/Postgres is optional. `apps/api/.env` sets `USE_IN_MEMORY=true`, which seeds demo data into the API process. With in-memory mode, data resets when the API restarts.
 
-Useful scripts: `npm run dev:web`, `npm run dev:api`, `npm run db:up`, `npm run db:migrate`, `npm run db:seed`, `npm run lint`.
+Useful scripts: `npm run dev:web`, `npm run dev:api`, `npm run db:up`, `npm run db:migrate`, `npm run db:seed`, `npm run lint`, `npm run typecheck`, `npm test`.
+
+Before typechecking the API, generate the Prisma Client with `npm run prisma:generate -w @taskflow/api`. CI does this automatically. API integration tests live in `apps/api/tests` and spawn their own in-memory API on port 3101.
 
 ## Architecture in one minute
 

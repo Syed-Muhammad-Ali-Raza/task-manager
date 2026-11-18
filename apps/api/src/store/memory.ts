@@ -15,6 +15,38 @@ export type MemoryUser = {
   image: string | null;
 };
 
+type MemoryActor = { id: string; name: string; email: string };
+
+export type MemoryTask = {
+  id: string;
+  boardId: string;
+  listId: string;
+  title: string;
+  description: string | null;
+  createdBy: string;
+  assigneeId: string;
+  priority: "low" | "medium" | "high" | "urgent";
+  status: "todo" | "in_progress" | "done";
+  key: string;
+  dueDate: Date | null;
+  timeTrackingMinutes: number;
+  flagged?: boolean;
+  labels?: string[];
+  coverUrl?: string | null;
+  parentId?: string | null;
+  assignee: MemoryActor;
+  creator: MemoryActor;
+};
+
+export type MemoryWorkspace = {
+  id: string;
+  name: string;
+  slug: string;
+  description: string | null;
+  members: { userId: string; role: string }[];
+  boards: { id: string; name: string; workspaceId: string }[];
+};
+
 const user: MemoryUser = {
   id: "user_demo",
   email: "syed.ali@taskflow.dev",
@@ -42,7 +74,7 @@ const teammate: MemoryUser = {
 const sa = { id: user.id, name: user.name, email: user.email };
 const sara = { id: teammate.id, name: teammate.name, email: teammate.email };
 
-const tasks = [
+const tasks: MemoryTask[] = [
   {
     id: "task_1",
     boardId: "board_launch",
@@ -146,7 +178,7 @@ const tasks = [
   },
 ];
 
-const workspaces = [
+const workspaces: MemoryWorkspace[] = [
   {
     id: "ws_northwind",
     name: "Northwind Studio",
