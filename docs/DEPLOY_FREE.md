@@ -41,11 +41,8 @@ Never commit either connection string. Only placeholders belong in `.env.example
 ## 2. Deploy the API to Vercel
 
 1. Open <https://vercel.com/new> and import `Syed-Muhammad-Ali-Raza/task-manager`.
-2. Set **Root Directory** to `apps/api`.
-3. Use Framework Preset **Other**, Node.js 22, and these settings:
-   - Build Command: `npm run vercel-build`
-   - Output Directory: leave empty
-   - Install Command: leave empty (npm workspaces are detected)
+2. Leave **Root Directory** at the repository root so npm workspaces can resolve `@taskflow/shared`.
+3. Use Framework Preset **Other** and Node.js 22. Leave the build, output, and install commands at their defaults; the root `vercel.json` and `vercel-build` script handle the API.
 4. Add these Environment Variables for **Production**, **Preview**, and **Development**:
 
    | Name | Value |
@@ -59,7 +56,7 @@ Never commit either connection string. Only placeholders belong in `.env.example
 
    Leave `CORS_ORIGIN` and `FRONTEND_URL` as `http://localhost:3000` for the first deploy, then update them after the web project exists.
 
-5. Deploy. `apps/api/vercel.json` rewrites all requests to the Express handler in `apps/api/api/index.ts`.
+5. Deploy. The root `vercel.json` rewrites all requests to the Express handler in `apps/api/api/index.ts`.
 
 Verify:
 
