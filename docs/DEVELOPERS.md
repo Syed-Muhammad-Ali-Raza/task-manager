@@ -49,7 +49,7 @@ The Next 16 `proxy.ts` blocks `/dashboard/*` when `tf_access` is missing.
 
 ## Kanban drag and drop
 
-`BoardView` uses `@dnd-kit`. Dropping a card onto a column `PATCH`es `/api/tasks/:id` with `{ status }`. The API also moves `listId` to the matching list (`todo` → position 0, `in_progress` → 1, `done` → 2).
+`BoardView` uses `@dnd-kit`. Dropping a card onto a column `PATCH`es `/api/tasks/:id` with `{ status }`. The API also moves `listId` to the matching list (`todo` → position 0, `in_progress` → 1, `done` → 2). The moving card is rendered in a high-z-index `DragOverlay` so it cannot be clipped or covered by a column; the original card stays as a faded placeholder.
 
 ## Folders
 

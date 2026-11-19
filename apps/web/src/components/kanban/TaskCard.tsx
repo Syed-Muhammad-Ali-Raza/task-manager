@@ -2,7 +2,6 @@
 
 import type { ReactNode } from "react";
 import { useDraggable, useDroppable } from "@dnd-kit/core";
-import { CSS } from "@dnd-kit/utilities";
 import { useI18n } from "@/i18n/client";
 import { TaskCardMenu } from "./TaskCardMenu";
 import type { BoardList, KanbanTask } from "./types";
@@ -29,6 +28,7 @@ function initials(name?: string | null) {
 export function TaskCard({
   task,
   draggable = false,
+  overlay = false,
   lists = [],
   tasks = [],
   boardId,
@@ -37,6 +37,7 @@ export function TaskCard({
 }: {
   task: KanbanTask;
   draggable?: boolean;
+  overlay?: boolean;
   lists?: BoardList[];
   tasks?: KanbanTask[];
   boardId?: string;
@@ -45,14 +46,15 @@ export function TaskCard({
 }) {
   const { dict } = useI18n();
   const t = dict.dashboard.task;
-  const { attributes, listeners, setNodeRef: setDragRef, transform, isDragging } = useDraggable({
+  const { attributes, listeners, setNodeRef: setDragRef, isDragging } = useDraggable({
     id: task.id,
     data: { listId: task.listId, status: task.status },
-    disabled: !draggable,
+    disabled: overlay || !draggable,
   });
   const { setNodeRef: setDropRef, isOver } = useDroppable({
     id: `task-${task.id}`,
     data: { listId: task.listId, status: task.status },
+    disabled: overlay,
   });
 
   function setNodeRef(node: HTMLElement | null) {
@@ -60,13 +62,10 @@ export function TaskCard({
     setDropRef(node);
   }
 
-  const style = transform ? { transform: CSS.Translate.toString(transform) } : undefined;
-
   return (
     <article
-      ref={draggable ? setNodeRef : undefined}
-      style={style}
-      className={`group relative rounded-lg bg-white p-3 shadow-sm ring-1 ring-black/5 ${isDragging ? "opacity-60" : ""} ${isOver ? "ring-[#0c66e4]" : ""} ${task.flagged ? "ring-1 ring-[#c9372c]" : ""}`}
+      ref={!overlay && draggable ? setNodeRef : undefined}
+      className={`group relative rounded-lg bg-white p-3 ring-1 ring-black/5 ${overlay ? "shadow-[0_12px_28px_rgba(9,30,66,0.25)]" : "shadow-sm"} ${isDragging ? "opacity-30" : ""} ${isOver ? "ring-[#0c66e4]" : ""} ${task.flagged ? "ring-[#c9372c]" : ""}`}
     >
       {task.coverUrl ? (
         // eslint-disable-next-line @next/next/no-img-element
@@ -110,7 +109,7 @@ export function TaskCard({
           {task.key ?? task.id.slice(0, 6).toUpperCase()}
         </span>
         <span className="flex items-center gap-2">
-          {draggable ? (
+          {draggable && !overlay ? (
             <span
               className="cursor-grab text-[#626f86] active:cursor-grabbing"
               {...listeners}

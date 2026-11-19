@@ -1,7 +1,16 @@
 "use client";
 
 import { useEffect, useMemo, useState } from "react";
-import { DndContext, PointerSensor, KeyboardSensor, useSensor, useSensors, type DragEndEvent } from "@dnd-kit/core";
+import {
+  DndContext,
+  DragOverlay,
+  PointerSensor,
+  KeyboardSensor,
+  useSensor,
+  useSensors,
+  type DragEndEvent,
+  type DragStartEvent,
+} from "@dnd-kit/core";
 import { useI18n } from "@/i18n/client";
 import { ColumnDrop, TaskCard } from "./TaskCard";
 import type { BoardList, KanbanTask } from "./types";
@@ -27,10 +36,12 @@ export function BoardView({
 }) {
   const { dict } = useI18n();
   const [localTasks, setLocalTasks] = useState(tasks);
+  const [activeId, setActiveId] = useState<string | null>(null);
   useEffect(() => {
     setLocalTasks(tasks);
   }, [tasks]);
   const display = onMove ? localTasks : tasks;
+  const activeTask = display.find((task) => task.id === activeId) ?? null;
 
   const fallbackColumns = useMemo(
     () =>
@@ -66,7 +77,12 @@ export function BoardView({
     useSensor(KeyboardSensor),
   );
 
+  function handleDragStart(event: DragStartEvent) {
+    setActiveId(String(event.active.id));
+  }
+
   function handleDragEnd(event: DragEndEvent) {
+    setActiveId(null);
     const over = event.over;
     const taskId = String(event.active.id);
     if (!over || !onMove) return;
@@ -109,8 +125,20 @@ export function BoardView({
   }
 
   return (
-    <DndContext sensors={sensors} onDragEnd={handleDragEnd}>
+    <DndContext
+      sensors={sensors}
+      onDragStart={handleDragStart}
+      onDragEnd={handleDragEnd}
+      onDragCancel={() => setActiveId(null)}
+    >
       {board}
+      <DragOverlay zIndex={1000} className="pointer-events-none">
+        {activeTask ? (
+          <div aria-hidden="true">
+            <TaskCard task={activeTask} overlay lists={lists} tasks={display} boardId={boardId} />
+          </div>
+        ) : null}
+      </DragOverlay>
     </DndContext>
   );
 }
