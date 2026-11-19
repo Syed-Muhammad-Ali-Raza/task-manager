@@ -1,4 +1,5 @@
 import type { MetadataRoute } from "next";
+import { locales, localizedPath } from "@/i18n/config";
 
 const siteUrl =
   process.env.NEXT_PUBLIC_APP_URL ?? process.env.NEXTAUTH_URL ?? "http://localhost:3000";
@@ -15,10 +16,19 @@ const publicRoutes = [
 export default function sitemap(): MetadataRoute.Sitemap {
   const lastModified = new Date();
 
-  return publicRoutes.map(({ path, changeFrequency, priority }) => ({
-    url: path === "/" ? siteUrl : `${siteUrl}${path}`,
-    lastModified,
-    changeFrequency,
-    priority,
-  }));
+  return publicRoutes.map(({ path, changeFrequency, priority }) => {
+    const languages: Record<string, string> = {};
+    for (const locale of locales) {
+      languages[locale] = `${siteUrl}${localizedPath(locale, path)}`;
+    }
+    languages["x-default"] = `${siteUrl}${localizedPath("en", path)}`;
+
+    return {
+      url: `${siteUrl}${localizedPath("en", path)}`,
+      lastModified,
+      changeFrequency,
+      priority,
+      alternates: { languages },
+    };
+  });
 }

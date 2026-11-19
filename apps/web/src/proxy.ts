@@ -1,16 +1,50 @@
-import { NextResponse } from "next/server";
-import type { NextRequest } from "next/server";
-import { ACCESS_COOKIE } from "@/lib/auth-cookie";
+import { NextResponse, type NextRequest } from "next/server";
+import {
+  hasLocale,
+  localeCookie,
+  localeFromAcceptLanguage,
+  locales,
+} from "./i18n/config";
+
+function hasLocalePrefix(pathname: string): boolean {
+  return locales.some(
+    (locale) => pathname === `/${locale}` || pathname.startsWith(`/${locale}/`),
+  );
+}
+
+function isNonPageRequest(pathname: string): boolean {
+  return (
+    pathname.startsWith("/api/") ||
+    pathname.startsWith("/_next/") ||
+    /\.[^/]+$/.test(pathname)
+  );
+}
 
 export function proxy(request: NextRequest) {
-  const token = request.cookies.get(ACCESS_COOKIE)?.value;
-  const isDashboard = request.nextUrl.pathname.startsWith("/dashboard");
-  if (isDashboard && !token) {
-    return NextResponse.redirect(new URL("/login", request.url));
+  const { pathname } = request.nextUrl;
+
+  if (isNonPageRequest(pathname) || hasLocalePrefix(pathname)) {
+    return NextResponse.next();
   }
-  return NextResponse.next();
+
+  const cookieLocale = request.cookies.get(localeCookie)?.value;
+  const locale =
+    cookieLocale && hasLocale(cookieLocale)
+      ? cookieLocale
+      : localeFromAcceptLanguage(request.headers.get("accept-language"));
+
+  const url = request.nextUrl.clone();
+  url.pathname = `/${locale}${pathname === "/" ? "" : pathname}`;
+
+  const response = NextResponse.redirect(url);
+  response.cookies.set(localeCookie, locale, {
+    path: "/",
+    maxAge: 60 * 60 * 24 * 365,
+    sameSite: "lax",
+  });
+  return response;
 }
 
 export const config = {
-  matcher: ["/dashboard/:path*"],
+  matcher: ["/((?!api|_next/static|_next/image|.*\\.[^/]+$).*)"],
 };

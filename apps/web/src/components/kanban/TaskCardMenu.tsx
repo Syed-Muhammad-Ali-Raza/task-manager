@@ -2,6 +2,7 @@
 
 import { useEffect, useLayoutEffect, useRef, useState } from "react";
 import { createPortal } from "react-dom";
+import { useI18n, useLocalizedPath } from "@/i18n/client";
 import type { BoardList, KanbanTask } from "./types";
 
 type Props = {
@@ -16,6 +17,9 @@ type Props = {
 type Flyout = "move" | "status" | "parent" | "labels" | "confluence" | null;
 
 export function TaskCardMenu({ task, lists, tasks, boardId, onOpen, onChange }: Props) {
+  const { dict } = useI18n();
+  const lp = useLocalizedPath();
+  const t = dict.dashboard.task;
   const [open, setOpen] = useState(false);
   const [flyout, setFlyout] = useState<Flyout>(null);
   const [coords, setCoords] = useState({ top: 0, left: 0, flyLeft: false });
@@ -77,7 +81,7 @@ export function TaskCardMenu({ task, lists, tasks, boardId, onOpen, onChange }: 
 
   const link = typeof window === "undefined"
     ? ""
-    : `${window.location.origin}/dashboard/boards/${boardId ?? task.listId}?task=${task.id}`;
+    : `${window.location.origin}${lp(`/dashboard/boards/${boardId ?? task.listId}?task=${task.id}`)}`;
 
   const flyoutClass = `absolute top-0 w-56 max-h-[min(320px,70vh)] overflow-y-auto rounded-lg bg-white py-1 shadow-xl ring-1 ring-black/10 ${
     coords.flyLeft ? "right-full mr-1" : "left-full ml-1"
@@ -91,45 +95,45 @@ export function TaskCardMenu({ task, lists, tasks, boardId, onOpen, onChange }: 
           className="fixed z-[10000] max-h-[min(380px,calc(100vh-16px))] w-[232px] overflow-y-auto rounded-lg bg-white py-1 text-[13px] text-[#172b4d] shadow-[0_8px_24px_rgba(9,30,66,0.25)] ring-1 ring-black/10"
           style={{ top: coords.top, left: coords.left }}
         >
-          <MenuRow label="Move work item" hasChild onHover={() => setFlyout("move")} onClick={() => setFlyout("move")} />
+          <MenuRow label={t.moveWorkItem} hasChild onHover={() => setFlyout("move")} onClick={() => setFlyout("move")} />
           <MenuRow
-            label="Change status"
+            label={t.changeStatus}
             hasChild
             onHover={() => setFlyout("status")}
             onClick={() => setFlyout("status")}
           />
-          <MenuRow label="Copy link" onHover={() => setFlyout(null)} onClick={() => void copy(link)} />
-          <MenuRow label="Copy key" onHover={() => setFlyout(null)} onClick={() => void copy(task.key ?? task.id)} />
+          <MenuRow label={t.copyLink} onHover={() => setFlyout(null)} onClick={() => void copy(link)} />
+          <MenuRow label={t.copyKey} onHover={() => setFlyout(null)} onClick={() => void copy(task.key ?? task.id)} />
           <Divider />
           <MenuRow
-            label="Link Confluence page"
+            label={t.linkConfluencePage}
             hasChild
             onHover={() => setFlyout("confluence")}
             onClick={() => setFlyout("confluence")}
           />
           <MenuRow
-            label="Link work item"
+            label={t.linkWorkItem}
             hasChild
             onHover={() => setFlyout("parent")}
             onClick={() => setFlyout("parent")}
           />
           <MenuRow
-            label="Change parent"
+            label={t.changeParent}
             hasChild
             onHover={() => setFlyout("parent")}
             onClick={() => setFlyout("parent")}
           />
           <MenuRow
-            label="Select cover"
+            label={t.selectCover}
             onHover={() => setFlyout(null)}
             onClick={() => {
               onOpen();
               setOpen(false);
             }}
           />
-          <MenuRow label="Edit labels" hasChild onHover={() => setFlyout("labels")} onClick={() => setFlyout("labels")} />
+          <MenuRow label={t.editLabels} hasChild onHover={() => setFlyout("labels")} onClick={() => setFlyout("labels")} />
           <MenuRow
-            label={task.flagged ? "Remove flag" : "Add flag"}
+            label={task.flagged ? t.removeFlag : t.addFlag}
             onHover={() => setFlyout(null)}
             onClick={() => {
               onChange({ flagged: !task.flagged });
@@ -165,7 +169,7 @@ export function TaskCardMenu({ task, lists, tasks, boardId, onOpen, onChange }: 
                   setOpen(false);
                 }}
               >
-                No parent
+                {t.noParent}
               </button>
               {tasks
                 .filter((item) => item.id !== task.id)
@@ -186,7 +190,7 @@ export function TaskCardMenu({ task, lists, tasks, boardId, onOpen, onChange }: 
           )}
           {flyout === "labels" && (
             <div className={flyoutClass}>
-              {["bug", "feature", "chatbot", "qa"].map((label) => {
+              {(Object.keys(t.labels) as (keyof typeof t.labels)[]).map((label) => {
                 const selected = task.labels?.includes(label);
                 return (
                   <button
@@ -200,7 +204,7 @@ export function TaskCardMenu({ task, lists, tasks, boardId, onOpen, onChange }: 
                       onChange({ labels: next });
                     }}
                   >
-                    {label}
+                    {t.labels[label]}
                     {selected ? "✓" : ""}
                   </button>
                 );
@@ -209,13 +213,13 @@ export function TaskCardMenu({ task, lists, tasks, boardId, onOpen, onChange }: 
           )}
           {flyout === "confluence" && (
             <div className={flyoutClass}>
-              <p className="px-3 py-2 text-[12px] text-[#626f86]">Paste a Confluence URL to attach it to this work item.</p>
+              <p className="px-3 py-2 text-[12px] text-[#626f86]">{t.confluenceHint}</p>
               <button
                 type="button"
                 className="block w-full px-3 py-2 text-left hover:bg-[#f1f2f4]"
                 onClick={() => void copy("https://confluence.example/wiki/spaces/TF")}
               >
-                Copy sample page link
+                {t.copySamplePageLink}
               </button>
             </div>
           )}
@@ -230,7 +234,7 @@ export function TaskCardMenu({ task, lists, tasks, boardId, onOpen, onChange }: 
         ref={buttonRef}
         type="button"
         className="grid h-7 w-7 shrink-0 place-items-center rounded-md text-[#44546f] hover:bg-[#091e420f]"
-        aria-label="More actions"
+        aria-label={t.moreActions}
         aria-expanded={open}
         onClick={(event) => {
           event.stopPropagation();

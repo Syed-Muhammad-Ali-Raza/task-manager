@@ -1,4 +1,38 @@
+import { apiErrors, type ApiErrorKey } from "@/i18n/api-errors";
+import { defaultLocale, hasLocale, localizedPath, type Locale } from "@/i18n/config";
+
 const API_URL = process.env.API_URL ?? process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:3001";
+
+function currentLocale(): Locale {
+  if (typeof document === "undefined") return defaultLocale;
+  const lang = document.documentElement.lang;
+  return hasLocale(lang) ? lang : defaultLocale;
+}
+
+function message(key: ApiErrorKey, status?: number): string {
+  const text = apiErrors[currentLocale()][key];
+  return status === undefined ? text : `${text} ${status}`;
+}
+
+const knownApiErrors: Record<string, ApiErrorKey> = {
+  Unauthorized: "unauthorized",
+};
+
+function errorMessage(
+  body: { error?: string },
+  fallback: ApiErrorKey,
+  status?: number,
+): string {
+  const known = body.error ? knownApiErrors[body.error] : undefined;
+  if (known) return message(known);
+  return body.error ?? message(fallback, status);
+}
+
+function redirectToLogin() {
+  if (typeof window !== "undefined") {
+    window.location.assign(localizedPath(currentLocale(), "/login"));
+  }
+}
 
 export async function apiCall<T>(endpoint: string, options: RequestInit = {}): Promise<T> {
   const response = await fetch(`/api/proxy${endpoint}`, {
@@ -10,14 +44,14 @@ export async function apiCall<T>(endpoint: string, options: RequestInit = {}): P
     },
   });
 
-  if (response.status === 401 && typeof window !== "undefined") {
-    window.location.assign("/login");
-    throw new Error("Unauthorized");
+  if (response.status === 401) {
+    redirectToLogin();
+    throw new Error(message("unauthorized"));
   }
 
   if (!response.ok) {
     const body = (await response.json().catch(() => ({}))) as { error?: string };
-    throw new Error(body.error ?? `API error ${response.status}`);
+    throw new Error(errorMessage(body, "apiError", response.status));
   }
 
   return response.json() as Promise<T>;
@@ -32,7 +66,7 @@ export async function loginRequest(email: string, password: string) {
   });
   if (!response.ok) {
     const body = (await response.json().catch(() => ({}))) as { error?: string };
-    throw new Error(body.error ?? "Could not sign in");
+    throw new Error(errorMessage(body, "couldNotSignIn"));
   }
   return response.json() as Promise<{ user: { id: string; email: string; name: string | null } }>;
 }
@@ -46,7 +80,7 @@ export async function joinInviteRequest(token: string, name: string, password: s
   });
   if (!response.ok) {
     const body = (await response.json().catch(() => ({}))) as { error?: string };
-    throw new Error(body.error ?? "Could not join");
+    throw new Error(errorMessage(body, "couldNotJoin"));
   }
   return response.json() as Promise<{ user: { id: string; email: string; name: string | null } }>;
 }
@@ -68,16 +102,15 @@ export async function uploadFile<T>(endpoint: string, file: File, extra?: Record
     credentials: "same-origin",
     body: data,
   });
-  if (response.status === 401 && typeof window !== "undefined") {
-    window.location.assign("/login");
-    throw new Error("Unauthorized");
+  if (response.status === 401) {
+    redirectToLogin();
+    throw new Error(message("unauthorized"));
   }
   if (!response.ok) {
     const body = (await response.json().catch(() => ({}))) as { error?: string };
-    throw new Error(body.error ?? `Upload failed ${response.status}`);
+    throw new Error(errorMessage(body, "uploadFailed", response.status));
   }
   return response.json() as Promise<T>;
 }
 
 export { API_URL };
-

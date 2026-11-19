@@ -1,6 +1,7 @@
 "use client";
 
 import { FormEvent, useCallback, useEffect, useState } from "react";
+import { useI18n } from "@/i18n/client";
 import { apiCall, uploadFile } from "@/lib/api";
 import type { KanbanTask } from "./types";
 
@@ -24,9 +25,9 @@ type TaskDetailData = KanbanTask & {
   attachments: Attachment[];
 };
 
-const priorities = ["low", "medium", "high", "urgent"] as const;
-
 export function TaskDetail({ taskId, onClose, onUpdated }: { taskId: string; onClose: () => void; onUpdated: () => void }) {
+  const { locale, dict } = useI18n();
+  const t = dict.dashboard.task;
   const [task, setTask] = useState<TaskDetailData | null>(null);
   const [description, setDescription] = useState("");
   const [comment, setComment] = useState("");
@@ -40,8 +41,8 @@ export function TaskDetail({ taskId, onClose, onUpdated }: { taskId: string; onC
   }, [taskId]);
 
   useEffect(() => {
-    load().catch((err) => setError(err instanceof Error ? err.message : "Could not load task"));
-  }, [load]);
+    load().catch((err) => setError(err instanceof Error ? err.message : t.couldNotLoad));
+  }, [load, t.couldNotLoad]);
 
   async function saveDescription() {
     setSaving(true);
@@ -53,7 +54,7 @@ export function TaskDetail({ taskId, onClose, onUpdated }: { taskId: string; onC
       await load();
       onUpdated();
     } catch (err) {
-      setError(err instanceof Error ? err.message : "Could not save");
+      setError(err instanceof Error ? err.message : t.couldNotSave);
     } finally {
       setSaving(false);
     }
@@ -87,7 +88,7 @@ export function TaskDetail({ taskId, onClose, onUpdated }: { taskId: string; onC
   if (!task) {
     return (
       <div className="fixed inset-0 z-40 flex justify-end bg-black/30">
-        <aside className="h-full w-full max-w-xl bg-white p-6">{error || "Loading…"}</aside>
+        <aside className="h-full w-full max-w-xl bg-white p-6">{error || t.loading}</aside>
       </div>
     );
   }
@@ -101,32 +102,32 @@ export function TaskDetail({ taskId, onClose, onUpdated }: { taskId: string; onC
             <h2 className="mt-1 text-xl font-semibold text-[#172b4d]">{task.title}</h2>
           </div>
           <button type="button" className="text-[#626f86]" onClick={onClose}>
-            Close
+            {t.close}
           </button>
         </div>
 
         <label className="mt-5 block text-[12px] font-semibold uppercase text-[#626f86]">
-          Priority
+          {t.priority}
           <select
             className="mt-1 w-full rounded-md border border-[#dcdfe4] px-3 py-2 text-sm capitalize"
             value={task.priority}
             onChange={(event) => savePriority(event.target.value)}
           >
-            {priorities.map((item) => (
+            {(Object.keys(t.priorities) as (keyof typeof t.priorities)[]).map((item) => (
               <option key={item} value={item}>
-                {item}
+                {t.priorities[item]}
               </option>
             ))}
           </select>
         </label>
 
         <label className="mt-5 block text-[12px] font-semibold uppercase text-[#626f86]">
-          Description
+          {t.description}
           <textarea
             className="mt-1 min-h-28 w-full rounded-md border border-[#dcdfe4] px-3 py-2 text-sm"
             value={description}
             onChange={(event) => setDescription(event.target.value)}
-            placeholder="Add a description…"
+            placeholder={t.addDescription}
           />
         </label>
         <button
@@ -135,12 +136,12 @@ export function TaskDetail({ taskId, onClose, onUpdated }: { taskId: string; onC
           className="mt-2 rounded-md bg-[#0c66e4] px-3 py-1.5 text-sm text-white disabled:opacity-60"
           onClick={() => void saveDescription()}
         >
-          Save description
+          {t.saveDescription}
         </button>
 
         <section className="mt-8">
-          <h3 className="text-[12px] font-semibold uppercase text-[#626f86]">Attachments</h3>
-          <p className="mt-1 text-[12px] text-[#626f86]">Images, PDF, video, or any file for reference.</p>
+          <h3 className="text-[12px] font-semibold uppercase text-[#626f86]">{t.attachments}</h3>
+          <p className="mt-1 text-[12px] text-[#626f86]">{t.attachmentsHint}</p>
           <input
             className="mt-2 block text-sm"
             type="file"
@@ -158,7 +159,7 @@ export function TaskDetail({ taskId, onClose, onUpdated }: { taskId: string; onC
                   <video src={`/api/proxy${file.url}`} controls className="max-h-48 w-full" />
                 ) : (
                   <a className="text-sm text-[#0c66e4]" href={`/api/proxy${file.url}`} target="_blank" rel="noreferrer">
-                    {file.name} {file.mimeType.includes("pdf") ? "(PDF)" : ""}
+                    {file.name} {file.mimeType.includes("pdf") ? t.pdf : ""}
                   </a>
                 )}
                 <p className="mt-1 text-[11px] text-[#626f86]">{file.name}</p>
@@ -168,13 +169,15 @@ export function TaskDetail({ taskId, onClose, onUpdated }: { taskId: string; onC
         </section>
 
         <section className="mt-8">
-          <h3 className="text-[12px] font-semibold uppercase text-[#626f86]">Comments</h3>
+          <h3 className="text-[12px] font-semibold uppercase text-[#626f86]">{t.comments}</h3>
           <ul className="mt-3 space-y-3">
             {task.comments.map((item) => (
               <li key={item.id} className="rounded-md bg-[#f7f8f9] p-3">
                 <p className="text-[12px] font-medium text-[#172b4d]">
                   {item.author.name}{" "}
-                  <span className="font-normal text-[#626f86]">{new Date(item.createdAt).toLocaleString()}</span>
+                  <span className="font-normal text-[#626f86]">
+                    {new Date(item.createdAt).toLocaleString(locale)}
+                  </span>
                 </p>
                 <p className="mt-1 text-sm text-[#172b4d]">{item.body}</p>
               </li>
@@ -183,12 +186,12 @@ export function TaskDetail({ taskId, onClose, onUpdated }: { taskId: string; onC
           <form onSubmit={addComment} className="mt-3">
             <textarea
               className="w-full rounded-md border border-[#dcdfe4] px-3 py-2 text-sm"
-              placeholder="Comment on this work item"
+              placeholder={t.commentPlaceholder}
               value={comment}
               onChange={(event) => setComment(event.target.value)}
               required
             />
-            <button className="mt-2 rounded-md bg-[#0c66e4] px-3 py-1.5 text-sm text-white">Comment</button>
+            <button className="mt-2 rounded-md bg-[#0c66e4] px-3 py-1.5 text-sm text-white">{t.comment}</button>
           </form>
         </section>
         {error ? <p className="mt-3 text-sm text-[#c9372c]">{error}</p> : null}

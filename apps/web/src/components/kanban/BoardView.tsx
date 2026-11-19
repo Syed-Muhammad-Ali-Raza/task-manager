@@ -2,16 +2,11 @@
 
 import { useEffect, useMemo, useState } from "react";
 import { DndContext, PointerSensor, KeyboardSensor, useSensor, useSensors, type DragEndEvent } from "@dnd-kit/core";
+import { useI18n } from "@/i18n/client";
 import { ColumnDrop, TaskCard } from "./TaskCard";
 import type { BoardList, KanbanTask } from "./types";
 
 export type { BoardList, KanbanTask };
-
-const fallbackColumns = [
-  { id: "todo", key: "todo", label: "To do" },
-  { id: "in_progress", key: "in_progress", label: "In progress" },
-  { id: "done", key: "done", label: "Done" },
-];
 
 export function BoardView({
   tasks,
@@ -30,11 +25,23 @@ export function BoardView({
   onOpen?: (taskId: string) => void;
   onChange?: (taskId: string, patch: Partial<KanbanTask>) => void;
 }) {
+  const { dict } = useI18n();
   const [localTasks, setLocalTasks] = useState(tasks);
   useEffect(() => {
     setLocalTasks(tasks);
   }, [tasks]);
   const display = onMove ? localTasks : tasks;
+
+  const fallbackColumns = useMemo(
+    () =>
+      dict.dashboard.board.defaultColumns.map((column) => ({
+        id: column.id,
+        key: column.id,
+        label: column.name,
+      })),
+    [dict.dashboard.board.defaultColumns],
+  );
+
   const columns = lists?.length
     ? [...lists].sort((a, b) => a.position - b.position).map((list) => ({
         id: list.id,

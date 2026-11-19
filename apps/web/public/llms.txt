@@ -9,30 +9,45 @@ TaskFlow is a portfolio-grade SaaS app for teams that want a focused kanban boar
 - Product name: TaskFlow
 - Category: collaborative task management / kanban software
 - Stack: Next.js 16 (App Router), React 19, Express 4, Prisma, Zod, Neon PostgreSQL or in-memory demo store
-- Public site: /
-- First-time guide: /guide
-- Sign in: /login
+- Canonical English site: https://taskflow-web-syed-ali.vercel.app/en
+- Available locales: en, ru, es, ar, hi, fr, de
+- First-time guide: https://taskflow-web-syed-ali.vercel.app/en/guide
+- Sign in: https://taskflow-web-syed-ali.vercel.app/en/login (not indexed)
 - Demo owner: Syed Ali, syed.ali@taskflow.dev
-- Structured data: WebSite, Organization, SoftwareApplication on /
-- Crawler rules: /robots.txt
-- Sitemap: /sitemap.xml
+- Structured data: WebSite, Organization, SoftwareApplication on the localized home pages
+- Crawler rules: https://taskflow-web-syed-ali.vercel.app/robots.txt
+- Sitemap: https://taskflow-web-syed-ali.vercel.app/sitemap.xml
 
-## Public pages
+## Localization
 
-- / — product overview and interactive board preview
-- /guide — ten-minute first-time tutorial for the hosted demo
-- /login — sign in to the dashboard (not indexed)
-- /sponsors — ways to support the project
-- /privacy — privacy policy for the hosted demo
-- /terms — terms of service for the hosted demo
-- /license — full MIT license text
+Public pages and the dashboard are translated into seven languages. Replace the `/en` prefix with any supported locale to read the same page:
 
-## Documentation
+- en — English
+- ru — Русский
+- es — Español
+- ar — العربية (right-to-left layout)
+- hi — हिन्दी
+- fr — Français
+- de — Deutsch
 
-- /AGENTS.md — instructions for coding agents
-- /docs/PROJECT_ARCHITECTURE.md — architecture and request flows
-- /docs/FIRST_TIME_GUIDE.md — beginner walkthrough
-- /docs/DEVELOPERS.md — auth cookies, SSR, drag-and-drop notes
-- /docs/agent-skills/seo/SKILL.md — SEO guidance
-- /docs/agent-skills/geo-aeo/SKILL.md — generative and answer engine guidance
-- /docs/agent-skills/accessibility-performance/SKILL.md — inclusive UI and performance guidance
+Language alternates and `hreflang` links are declared in page metadata and in `/sitemap.xml`. The language switcher saves the choice in the `tf_locale` cookie and redirects unprefixed URLs to the preferred locale.
+
+## Public pages (English canonical URLs)
+
+- https://taskflow-web-syed-ali.vercel.app/en — product overview and interactive board preview
+- https://taskflow-web-syed-ali.vercel.app/en/guide — ten-minute first-time tutorial for the hosted demo
+- https://taskflow-web-syed-ali.vercel.app/en/login — sign in to the dashboard (not indexed)
+- https://taskflow-web-syed-ali.vercel.app/en/sponsors — ways to support the project
+- https://taskflow-web-syed-ali.vercel.app/en/privacy — privacy policy for the hosted demo
+- https://taskflow-web-syed-ali.vercel.app/en/terms — terms of service for the hosted demo
+- https://taskflow-web-syed-ali.vercel.app/en/license — full MIT license text
+
+## Documentation (source repository)
+
+- AGENTS.md — https://github.com/Syed-Muhammad-Ali-Raza/task-manager/blob/main/AGENTS.md
+- PROJECT_ARCHITECTURE.md — https://github.com/Syed-Muhammad-Ali-Raza/task-manager/blob/main/docs/PROJECT_ARCHITECTURE.md
+- FIRST_TIME_GUIDE.md — https://github.com/Syed-Muhammad-Ali-Raza/task-manager/blob/main/docs/FIRST_TIME_GUIDE.md
+- DEVELOPERS.md — https://github.com/Syed-Muhammad-Ali-Raza/task-manager/blob/main/docs/DEVELOPERS.md
+- SEO skill — https://github.com/Syed-Muhammad-Ali-Raza/task-manager/blob/main/docs/agent-skills/seo/SKILL.md
+- GEO/AEO skill — https://github.com/Syed-Muhammad-Ali-Raza/task-manager/blob/main/docs/agent-skills/geo-aeo/SKILL.md
+- Accessibility & performance skill — https://github.com/Syed-Muhammad-Ali-Raza/task-manager/blob/main/docs/agent-skills/accessibility-performance/SKILL.md

@@ -1,0 +1,470 @@
+import { apiErrors } from "@/i18n/api-errors";
+
+const en = {
+  common: {
+    language: "Language",
+    signIn: "Sign in",
+    signOut: "Sign out",
+    create: "Create",
+    cancel: "Cancel",
+    save: "Save",
+    close: "Close",
+    email: "Email",
+    password: "Password",
+    role: "Role",
+    workspace: "Workspace",
+    workspaces: "Workspaces",
+    board: "Board",
+    people: "People",
+    billing: "Billing",
+    guide: "Guide",
+    sponsors: "Sponsors",
+    privacyPolicy: "Privacy policy",
+    termsOfService: "Terms of service",
+    mitLicense: "MIT license",
+    firstTimeGuide: "First-time guide",
+    sourceOnGitHub: "Source on GitHub",
+    overview: "Overview",
+    liveBoard: "Live board",
+    openTheProduct: "Open the product",
+    publicNavigation: "Public navigation",
+    productLinks: "Product links",
+    projectLinks: "Project links",
+    product: "Product",
+    project: "Project",
+    copyright: "© 2026 Syed Ali. Source code released under the MIT License.",
+    effectiveDate: "Effective date: November 19, 2026",
+    ...apiErrors.en,
+  },
+  footer: {
+    tagline: "A collaborative task manager built with Next.js, Express, and PostgreSQL.",
+  },
+  landing: {
+    seedLists: [
+      { id: "todo", name: "Ready" },
+      { id: "in_progress", name: "In motion" },
+      { id: "done", name: "Shipped" },
+    ],
+    seedTasks: [
+      { id: "p1", title: "Write launch notes", label: "launch" },
+      { id: "p2", title: "Wire workspace roles", label: "auth" },
+      { id: "p3", title: "Seed demo workspace", label: "demo" },
+      { id: "p4", title: "Polish board overflow menus", label: "ui" },
+    ],
+    heroEyebrow: "Collaborative SaaS · portfolio build",
+    heroTitle: "Keep the work moving, not the meetings.",
+    heroBody:
+      "A production-shaped board: Next.js App Router, Express, PostgreSQL, cookie sessions, and a Jira-style workspace you can actually ship from.",
+    heroPrimary: "Try as Syed Ali",
+    heroSecondary: "Drag the demo board",
+    statCards: "Cards in preview",
+    statShipped: "Shipped",
+    statSession: "Session",
+    statCookie: "Cookie",
+    previewHint: "Launch board · drag cards between columns",
+    reset: "Reset",
+    tabs: [
+      {
+        id: "boards",
+        label: "Boards",
+        title: "Boards that feel like work",
+        body: "Columns, priorities, flags, and a full card menu — drag a card in the live preview.",
+      },
+      {
+        id: "session",
+        label: "Session",
+        title: "Session that survives refresh",
+        body: "httpOnly cookies via a Next.js BFF. No tokens in localStorage. SSR reads the same session.",
+      },
+      {
+        id: "people",
+        label: "People",
+        title: "People and spaces",
+        body: "Workspaces, unique names, invites, and roles. Rename once and it follows the sidebar and board.",
+      },
+    ],
+    stackTitle: "What this build proves",
+    stack: [
+      {
+        title: "Monorepo split",
+        body: "`apps/web` and `apps/api` share types, so the UI and API can grow independently.",
+      },
+      {
+        title: "Real data model",
+        body: "Workspaces, roles, boards, lists, comments, and attachments — not a single todo table.",
+      },
+      {
+        title: "Production habits",
+        body: "Helmet, Zod, httpOnly cookies, SSR with no-store, unique workspace names, and a health check.",
+      },
+    ],
+    guideCtaTitle: "New here? Get a guided tour.",
+    guideCtaBody:
+      "Follow the first-time guide to sign in, create a task, move it across the board, and invite a teammate.",
+    guideCtaButton: "Open the 10-minute guide",
+  },
+  login: {
+    title: "Sign in",
+    metaDescription: "Sign in to your TaskFlow workspace to manage boards, tasks, and teammates.",
+    heading: "Sign in to TaskFlow",
+    subheading: "Sign in as workspace owner Syed Ali to walk the product.",
+    submitting: "Signing in…",
+  },
+  guide: {
+    title: "First-time guide",
+    metaDescription:
+      "A ten-minute walkthrough of TaskFlow: sign in, open a workspace, create and move a task, invite a teammate, and sign out.",
+    eyebrow: "Start here",
+    pageTitle: "Your first 10 minutes in TaskFlow",
+    beforeTitle: "Before you begin",
+    beforeBody:
+      "The demo is free and needs no credit card. Use it for evaluation only; do not put sensitive information in a task, comment, or invitation.",
+    openDemo: "Open the demo",
+    tourTitle: "The guided tour",
+    stepPrefix: "Step",
+    steps: [
+      {
+        title: "Sign in with the demo account",
+        body: "Open the sign-in page and use the seeded account. TaskFlow saves the session in an httpOnly cookie, so no token is written to browser storage.",
+        detail: "Email: syed.ali@taskflow.dev · Password: demo1234",
+      },
+      {
+        title: "Open your workspace",
+        body: "The dashboard lists workspaces. Open TaskFlow Demo to see the seeded board. A workspace is the security boundary for boards, members, and invitations.",
+        detail: "Optional: create another workspace with a unique name, or rename an existing card inline.",
+      },
+      {
+        title: "Explore the board",
+        body: "The board has three lists: Ready, In motion, and Shipped. Use Search board to filter cards by title, and the sidebar to switch boards.",
+        detail: "The home page has an interactive preview if you want to try dragging before signing in.",
+      },
+      {
+        title: "Create a task",
+        body: "Choose + Create in the board header, type a short title, and press Create. Open the card to add a description, priority, assignee, labels, or a comment.",
+        detail: "Every change is saved through the Express API, not only in local browser state.",
+      },
+      {
+        title: "Move work forward",
+        body: "Drag the card into In motion, add a comment with the next action, and move it to Shipped when it is done. Drag and drop is keyboard-friendly.",
+        detail: "Task detail updates are validated with the same shared schemas the API uses.",
+      },
+      {
+        title: "Invite a teammate",
+        body: "Open People from the sidebar, choose a workspace, enter an email, and pick member, admin, or viewer. Send the invitation, then copy the generated invite link.",
+        detail: "Roles and workspace membership are enforced by the API, not by the Next.js proxy.",
+      },
+      {
+        title: "Check settings and sign out",
+        body: "Visit Billing/Settings to see the demo settings surface, then sign out from the sidebar. Sign back in to confirm the cookie-based session flow.",
+        detail: "That completes the tour. You now know the core TaskFlow workflow.",
+      },
+    ],
+    troubleshootingTitle: "If something looks wrong",
+    troubleshooting: [
+      {
+        question: "The demo password does not work",
+        answer: "Use exactly demo1234. The hosted demo and local in-memory mode use the same seeded account.",
+      },
+      {
+        question: "My local data disappeared",
+        answer: "In-memory mode resets when the API restarts. This is expected for local demonstration mode.",
+      },
+      {
+        question: "A request returned 429",
+        answer: "Rate limiting is active. Wait a moment and try again.",
+      },
+      {
+        question: "A workspace name was rejected",
+        answer: "Workspace names must be unique. Rename the existing workspace instead of creating a duplicate.",
+      },
+    ],
+    exploreTitle: "Keep exploring",
+    seeStack: "See the stack",
+    readPrivacy: "Read the privacy policy",
+    readTerms: "Read the terms",
+    supportProject: "Support the project",
+  },
+  privacy: {
+    title: "Privacy policy",
+    metaDescription:
+      "What TaskFlow stores, why it stores it, where data lives, and how to request deletion of a hosted demo account.",
+    eyebrow: "Legal",
+    pageDescription:
+      "Effective date: November 19, 2026. TaskFlow is a portfolio demo operated by Syed Ali. This policy explains what the app stores and why.",
+    whatWeStore: "What we store",
+    caption: "Categories of data TaskFlow stores and why",
+    tableCategory: "Category",
+    tableExamples: "Examples",
+    tableWhy: "Why",
+    categories: [
+      {
+        name: "Account details",
+        examples: "Name, email address, password hash, workspace role",
+        reason: "Sign you in and decide what you can access.",
+      },
+      {
+        name: "Workspace content",
+        examples: "Workspaces, boards, lists, tasks, comments, invitations",
+        reason: "Provide the core task-management features.",
+      },
+      {
+        name: "Session data",
+        examples: "An httpOnly tf_access cookie containing a signed JWT",
+        reason: "Keep you signed in without exposing the token to JavaScript.",
+      },
+      {
+        name: "Technical data",
+        examples: "IP address and request metadata",
+        reason: "Apply rate limits, protect the API, and diagnose failures.",
+      },
+    ],
+    passwordsNote:
+      "Passwords are hashed before storage. TaskFlow does not store raw JWTs in localStorage and does not set advertising or third-party analytics cookies.",
+    whereDataLives: "Where data lives",
+    localMode:
+      "Local demo mode: the API uses an in-memory store. Data disappears when the API process restarts.",
+    hostedMode:
+      "Hosted demo: application data is stored in Neon Postgres. The Next.js app and API run on Vercel, which may process infrastructure logs under their own policies.",
+    howWeUseData: "How we use data",
+    howWeUseDataBody:
+      "We use this information only to operate the app, keep it secure, and respond to support requests. We do not sell personal data and we do not use workspace content for advertising.",
+    sharingRetention: "Sharing and retention",
+    sharingRetentionBody:
+      "TaskFlow does not intentionally share workspace content with third parties. Hosting providers process data on our behalf to run the service. Local in-memory data is temporary; hosted data remains until you delete it or an inactive demo workspace is removed.",
+    securityChoices: "Security and your choices",
+    securityBody:
+      "Access checks happen in the Express API, including workspace membership and role checks. Account responses use Cache-Control: no-store. You can sign out, delete content you created, or request deletion of a hosted demo account.",
+    childrenBody:
+      "TaskFlow is not directed at children under 13. Do not submit sensitive, confidential, or production-critical data to the demo.",
+    changesContact: "Changes and contact",
+    changesBody:
+      "We may update this policy when the app changes; the effective date above identifies the current version. Questions or deletion requests: syed.ali@taskflow.dev.",
+    relatedBody:
+      "The repository source is licensed under the MIT License. See the terms of service and MIT license.",
+  },
+  terms: {
+    title: "Terms of service",
+    metaDescription:
+      "Plain-language rules for using the TaskFlow hosted demo and public website, plus how the MIT license applies to the source code.",
+    eyebrow: "Legal",
+    pageDescription:
+      "Effective date: November 19, 2026. These terms govern use of the TaskFlow hosted demo and public website. The source code is separately licensed under the MIT License.",
+    onThisPage: "On this page",
+    sections: [
+      {
+        id: "who-runs-this",
+        title: "Who runs this",
+        body: "TaskFlow is a portfolio project operated by Syed Ali. It is provided for demonstration, evaluation, and learning. It is not a commercial service and is not intended for production-critical work.",
+      },
+      {
+        id: "using-the-demo",
+        title: "Using the demo",
+        body: "You may use the demo only if you are at least 13 years old, use accurate account information, respect other users and their workspaces, and comply with applicable law. The shared demo account and seeded content are public examples. Do not enter passwords, secrets, personal data, or confidential business information.",
+      },
+      {
+        id: "accounts",
+        title: "Accounts and security",
+        body: "Keep your credentials private and sign out when you are finished. TaskFlow stores sessions in an httpOnly cookie and applies server-side membership and role checks. You are responsible for activity that happens with your account. Report suspected unauthorized access to syed.ali@taskflow.dev.",
+      },
+      {
+        id: "your-content",
+        title: "Your content",
+        body: "You keep ownership of content you create in TaskFlow. By submitting content, you grant the operator a limited, non-exclusive license to store and display it only to run the demo. Do not submit content you do not have the right to share. Content may be removed if it is abusive, unlawful, or puts the demo at risk.",
+      },
+      {
+        id: "acceptable-use",
+        title: "Acceptable use",
+        body: "Do not probe, scan, or attack the app, API, database, or hosting providers; bypass authentication, roles, rate limits, or workspace checks; scrape private routes or overwhelm the service; upload malware, spam, phishing material, or infringing content; impersonate another person; or use the demo for illegal activity.",
+      },
+      {
+        id: "availability",
+        title: "Availability and changes",
+        body: "The demo may be unavailable, reset, changed, or discontinued at any time. Local in-memory data resets when the API restarts, and hosted data may be deleted during maintenance. We may update these terms; the effective date above shows the current version.",
+      },
+      {
+        id: "open-source",
+        title: "Open-source license",
+        body: "The repository source code is licensed under the MIT License. That license allows you to copy, modify, and distribute the code, subject to its copyright notice. It does not grant access to hosted accounts, credentials, or private data.",
+      },
+      {
+        id: "third-parties",
+        title: "Third-party services",
+        body: "The hosted app uses Vercel for hosting and Neon for the database. Your use of those services is also subject to their terms and privacy policies. TaskFlow does not set advertising cookies.",
+      },
+      {
+        id: "disclaimer",
+        title: "Disclaimer and liability",
+        body: "The software and hosted demo are provided “as is” and “as available,” without warranties of any kind. To the maximum extent permitted by law, the operator is not liable for indirect, incidental, special, consequential, or punitive damages, or for lost data, profits, or use arising from the demo, even if advised of the possibility of such damages.",
+      },
+      {
+        id: "termination",
+        title: "Termination and contact",
+        body: "We may suspend or terminate access for conduct that violates these terms or threatens the service. You may stop using the demo at any time and request deletion of your hosted account. Questions: syed.ali@taskflow.dev.",
+      },
+    ],
+    relatedPolicies: "Related policies",
+  },
+  license: {
+    title: "MIT license",
+    metaDescription:
+      "TaskFlow source code is released under the MIT License by Syed Ali. Read the full license text and related policies.",
+    eyebrow: "Open source",
+    pageDescription:
+      "The source code is free to use, copy, modify, and distribute under the terms below. The hosted demo is also subject to the terms and privacy policy.",
+    fullTextTitle: "Full license text",
+    scopeTitle: "What this covers",
+    scopeBody:
+      "The MIT License applies to the repository source code. It does not grant access to hosted accounts, credentials, or private data. The canonical copy lives in the repository root as LICENSE.",
+  },
+  sponsors: {
+    title: "Sponsors and support",
+    metaDescription:
+      "TaskFlow is free and open source under the MIT License. Learn how to support the project through GitHub Sponsors, issues, reviews, and documentation.",
+    eyebrow: "Community",
+    pageDescription:
+      "TaskFlow is free and open source under the MIT License. The demo is self-funded for learning and portfolio purposes.",
+    whyTitle: "Why support matters",
+    whyBody:
+      "Sponsorship helps keep the demo online and the documentation useful. It is entirely optional: the code, guides, privacy policy, and terms remain free to read, use, fork, and improve.",
+    sponsorButton: "Sponsor on GitHub",
+    waysTitle: "Ways to help",
+    options: [
+      {
+        title: "Star and share",
+        body: "Star the repository and send it to someone learning Next.js, Express, or full-stack architecture.",
+      },
+      {
+        title: "Report a clear bug",
+        body: "Open an issue with steps to reproduce, expected behavior, and what you saw instead.",
+      },
+      {
+        title: "Review or improve",
+        body: "Review a pull request, tighten an accessibility detail, add a test, or clarify the docs.",
+      },
+      {
+        title: "Sponsor the maintainer",
+        body: "Use GitHub Sponsors if you want to support ongoing hosting and maintenance financially.",
+      },
+    ],
+    currentTitle: "Current sponsors",
+    currentBody:
+      "No sponsors are listed yet. To be acknowledged here, use the GitHub Sponsors link above or email syed.ali@taskflow.dev.",
+    teamsTitle: "For teams",
+    teamsBody:
+      "TaskFlow is a demo, not a managed service. For production work, fork the repository, deploy it to your own Vercel and Neon accounts, and maintain your own data and security controls.",
+    followGuide: "Follow the guide",
+    deploymentGuide: "Free deployment guide",
+  },
+  dashboard: {
+    title: "Workspace dashboard",
+    spacesLabel: "Spaces",
+    allWorkspaces: "All workspaces",
+    signOut: "Sign out",
+    workspacesTitle: "Workspaces",
+    workspacesHint: "Each name must be unique. Use Rename on a card if two spaces look the same.",
+    newWorkspacePlaceholder: "New workspace name",
+    couldNotCreateWorkspace: "Could not create workspace",
+    couldNotRenameWorkspace: "Could not rename workspace",
+    rename: "Rename",
+    noDescription: "No description yet",
+    openBoard: "Open board",
+    noBoard: "No board yet",
+    peopleTitle: "People",
+    peopleHint: "Invite teammates into the selected workspace. They join with the link (no email provider required in demo).",
+    workspaceLabel: "Workspace",
+    sendInvitation: "Send invitation",
+    inviteLink: "Invite link:",
+    currentMembers: "Current members",
+    pendingInvites: "Pending invites",
+    openLink: "Open link",
+    couldNotLoadPeople: "Could not load people",
+    couldNotSendInvite: "Could not send invite",
+    billingTitle: "Billing",
+    billingHint: "Plans are shown for the portfolio story. Test-mode Stripe can attach without changing this layout.",
+    plans: [
+      { name: "Free", price: "$0", note: "One workspace, core board." },
+      { name: "Pro", price: "$9", note: "More seats. Stripe checkout next." },
+      { name: "Enterprise", price: "$99", note: "SSO and audit trail later." },
+    ],
+    roles: {
+      member: "member",
+      admin: "admin",
+      viewer: "viewer",
+    },
+    board: {
+      breadcrumb: "Spaces /",
+      fallbackWorkspace: "Workspace",
+      create: "+ Create",
+      searchPlaceholder: "Search board",
+      newTaskPlaceholder: "What needs to be done?",
+      couldNotAddTask: "Could not add task",
+      couldNotMoveTask: "Could not move task",
+      couldNotUpdateTask: "Could not update task",
+      defaultColumns: [
+        { id: "todo", name: "To do" },
+        { id: "in_progress", name: "In progress" },
+        { id: "done", name: "Done" },
+      ],
+    },
+    task: {
+      drag: "Drag",
+      unassigned: "Unassigned",
+      create: "+ Create",
+      moveWorkItem: "Move work item",
+      changeStatus: "Change status",
+      copyLink: "Copy link",
+      copyKey: "Copy key",
+      linkConfluencePage: "Link Confluence page",
+      linkWorkItem: "Link work item",
+      changeParent: "Change parent",
+      selectCover: "Select cover",
+      editLabels: "Edit labels",
+      removeFlag: "Remove flag",
+      addFlag: "Add flag",
+      noParent: "No parent",
+      confluenceHint: "Paste a Confluence URL to attach it to this work item.",
+      copySamplePageLink: "Copy sample page link",
+      moreActions: "More actions",
+      priorities: {
+        low: "low",
+        medium: "medium",
+        high: "high",
+        urgent: "urgent",
+      },
+      labels: {
+        bug: "bug",
+        feature: "feature",
+        chatbot: "chatbot",
+        qa: "qa",
+      },
+      loading: "Loading…",
+      close: "Close",
+      priority: "Priority",
+      description: "Description",
+      addDescription: "Add a description…",
+      saveDescription: "Save description",
+      attachments: "Attachments",
+      attachmentsHint: "Images, PDF, video, or any file for reference.",
+      pdf: "(PDF)",
+      comments: "Comments",
+      commentPlaceholder: "Comment on this work item",
+      comment: "Comment",
+      couldNotLoad: "Could not load task",
+      couldNotSave: "Could not save",
+    },
+    invite: {
+      invalidInvitation: "Invalid invitation",
+      couldNotJoin: "Could not join",
+      joinPrefix: "Join",
+      fallbackWorkspace: "the workspace",
+      invitedAsPrefix: "Invited as",
+      fallbackRole: "member",
+      yourName: "Your name",
+      choosePassword: "Choose a password",
+      joining: "Joining…",
+      joinWorkspace: "Join workspace",
+    },
+  },
+};
+
+export default en;

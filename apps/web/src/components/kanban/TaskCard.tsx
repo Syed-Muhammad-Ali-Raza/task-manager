@@ -3,6 +3,7 @@
 import type { ReactNode } from "react";
 import { useDraggable, useDroppable } from "@dnd-kit/core";
 import { CSS } from "@dnd-kit/utilities";
+import { useI18n } from "@/i18n/client";
 import { TaskCardMenu } from "./TaskCardMenu";
 import type { BoardList, KanbanTask } from "./types";
 
@@ -42,6 +43,8 @@ export function TaskCard({
   onOpen?: () => void;
   onChange?: (patch: Partial<KanbanTask>) => void;
 }) {
+  const { dict } = useI18n();
+  const t = dict.dashboard.task;
   const { attributes, listeners, setNodeRef: setDragRef, transform, isDragging } = useDraggable({
     id: task.id,
     data: { listId: task.listId, status: task.status },
@@ -94,7 +97,7 @@ export function TaskCard({
         <div className="mt-2 flex flex-wrap gap-1">
           {task.labels.map((label) => (
             <span key={label} className="rounded bg-[#e9f2ff] px-1.5 py-0.5 text-[11px] text-[#0c66e4]">
-              {label}
+              {t.labels[label as keyof typeof t.labels] ?? label}
             </span>
           ))}
         </div>
@@ -112,13 +115,13 @@ export function TaskCard({
               className="cursor-grab text-[#626f86] active:cursor-grabbing"
               {...listeners}
               {...attributes}
-              aria-label="Drag"
+              aria-label={t.drag}
             >
               ⋮⋮
             </span>
           ) : null}
           <span
-            title={task.assignee?.name ?? "Unassigned"}
+            title={task.assignee?.name ?? t.unassigned}
             className="grid h-6 w-6 place-items-center rounded-full bg-[#0c66e4] text-[10px] font-semibold text-white"
           >
             {initials(task.assignee?.name)}
@@ -144,6 +147,7 @@ export function ColumnDrop({
   children: ReactNode;
   onCreate?: (listId: string) => void;
 }) {
+  const { dict } = useI18n();
   const { setNodeRef, isOver } = useDroppable({ id: listId, data: { listId, status } });
   return (
     <section
@@ -161,7 +165,7 @@ export function ColumnDrop({
           className="mx-2 mb-2 rounded-md px-2 py-1.5 text-left text-[14px] text-[#44546f] hover:bg-black/5"
           onClick={() => onCreate(listId)}
         >
-          + Create
+          {dict.dashboard.task.create}
         </button>
       ) : null}
     </section>
