@@ -12,11 +12,19 @@
 6. Audit production dependencies (`npm audit --omit=dev`).
 7. Build the Next.js app.
 
-Duplicate runs for the same ref are cancelled automatically. Dependabot opens weekly update PRs for npm packages and GitHub Actions.
+Duplicate runs for the same ref are cancelled automatically. Dependabot opens weekly update PRs for npm packages and GitHub Actions. Major npm updates are ignored because they need deliberate migration work; security updates are handled separately.
 
 ## Continuous delivery
 
-CD is handled by Vercel's GitHub integration, so no repository secret is needed:
+The live sites are currently deployed with the Vercel CLI. The Vercel projects are **not yet connected to GitHub**, so a `git push` does not trigger a deployment.
+
+To enable push-to-deploy:
+
+1. Authorize Vercel for `Syed-Muhammad-Ali-Raza/task-manager` in GitHub.
+2. Connect the repository to both Vercel projects (API from the repo root, web from `apps/web`).
+3. Confirm `vercel project inspect <project>` shows a Git repository for each project.
+
+Once connected:
 
 - Push to `main` → production deployment for both Vercel projects.
 - Push to any other branch or open a PR → preview deployment.
