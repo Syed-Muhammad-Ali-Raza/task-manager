@@ -13,6 +13,11 @@ updates:
         dependency-type: production
       development-dependencies:
         dependency-type: development
+    # Major bumps need deliberate migration work (and broke the web build in
+    # PRs #3 and #4). Security updates are handled separately by Dependabot.
+    ignore:
+      - update-types:
+          - major
 
   - package-ecosystem: github-actions
     directory: /
