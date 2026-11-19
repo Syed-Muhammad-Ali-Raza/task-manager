@@ -3,6 +3,7 @@
 import { useMemo, useState } from "react";
 import Link from "next/link";
 import { BoardView } from "@/components/kanban/BoardView";
+import { PublicFooter } from "@/components/marketing/PublicFooter";
 import type { KanbanTask } from "@/components/kanban/types";
 
 const lists = [
@@ -79,8 +80,6 @@ const tabs = [
 export function LandingExperience() {
   const [tasks, setTasks] = useState(seed);
   const [tab, setTab] = useState(tabs[0].id);
-  const [email, setEmail] = useState("");
-  const [joined, setJoined] = useState(false);
   const [spotlight, setSpotlight] = useState({ x: 50, y: 40 });
 
   const active = useMemo(() => tabs.find((item) => item.id === tab) ?? tabs[0], [tab]);
@@ -106,13 +105,19 @@ export function LandingExperience() {
 
       <header className="relative z-10 flex items-center justify-between px-6 py-5 md:px-10">
         <p className="font-display text-2xl font-semibold">TaskFlow</p>
-        <nav className="flex items-center gap-4 text-sm">
+        <nav aria-label="Public navigation" className="flex items-center gap-4 text-sm">
+          <Link href="/guide" className="text-flow">
+            Guide
+          </Link>
           <a href="#preview" className="hidden sm:inline">
             Live board
           </a>
           <a href="#stack" className="hidden sm:inline">
             Stack
           </a>
+          <Link href="/sponsors" className="hidden lg:inline">
+            Sponsors
+          </Link>
           <Link href="/login">Sign in</Link>
           <Link href="/login" className="bg-ink px-4 py-2 text-paper">
             Open the product
@@ -218,28 +223,15 @@ export function LandingExperience() {
       </section>
 
       <section className="relative z-10 border-t border-mist px-6 py-12 md:px-10">
-        <h2 className="font-display text-3xl">Get a walkthrough</h2>
-        <p className="mt-2 max-w-lg text-ink/70">Leave an email on this page — it stays in this session only, never localStorage.</p>
-        <form
-          className="mt-6 flex max-w-lg gap-2"
-          onSubmit={(event) => {
-            event.preventDefault();
-            if (!email.trim()) return;
-            setJoined(true);
-          }}
-        >
-          <input
-            className="flex-1 border border-mist bg-white px-3 py-3"
-            type="email"
-            placeholder="you@studio.dev"
-            value={email}
-            onChange={(event) => setEmail(event.target.value)}
-            required
-          />
-          <button className="bg-ink px-5 py-3 text-paper">{joined ? "Saved" : "Notify me"}</button>
-        </form>
-        {joined ? <p className="mt-3 text-sm text-flow">We will not persist this — open the demo to see the real product.</p> : null}
+        <h2 className="font-display text-3xl">New here? Get a guided tour.</h2>
+        <p className="mt-2 max-w-lg text-ink/70">
+          Follow the first-time guide to sign in, create a task, move it across the board, and invite a teammate.
+        </p>
+        <Link href="/guide" className="mt-6 inline-block bg-ink px-5 py-3 text-paper">
+          Open the 10-minute guide
+        </Link>
       </section>
+      <PublicFooter />
     </main>
   );
 }

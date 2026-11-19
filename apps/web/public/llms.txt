@@ -10,6 +10,7 @@ TaskFlow is a portfolio-grade SaaS app for teams that want a focused kanban boar
 - Category: collaborative task management / kanban software
 - Stack: Next.js 16 (App Router), React 19, Express 4, Prisma, Zod, Neon PostgreSQL or in-memory demo store
 - Public site: /
+- First-time guide: /guide
 - Sign in: /login
 - Demo owner: Syed Ali, syed.ali@taskflow.dev
 - Structured data: WebSite, Organization, SoftwareApplication on /
@@ -19,12 +20,18 @@ TaskFlow is a portfolio-grade SaaS app for teams that want a focused kanban boar
 ## Public pages
 
 - / — product overview and interactive board preview
-- /login — sign in to the dashboard
+- /guide — ten-minute first-time tutorial for the hosted demo
+- /login — sign in to the dashboard (not indexed)
+- /sponsors — ways to support the project
+- /privacy — privacy policy for the hosted demo
+- /terms — terms of service for the hosted demo
+- /license — full MIT license text
 
 ## Documentation
 
 - /AGENTS.md — instructions for coding agents
 - /docs/PROJECT_ARCHITECTURE.md — architecture and request flows
+- /docs/FIRST_TIME_GUIDE.md — beginner walkthrough
 - /docs/DEVELOPERS.md — auth cookies, SSR, drag-and-drop notes
 - /docs/agent-skills/seo/SKILL.md — SEO guidance
 - /docs/agent-skills/geo-aeo/SKILL.md — generative and answer engine guidance

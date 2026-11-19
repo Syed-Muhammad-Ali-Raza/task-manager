@@ -9,7 +9,7 @@ Use this when adding or changing public pages, metadata, links, or content in `a
 
 ## Scope
 
-Only public routes should be indexable: `/`, and any future marketing/content pages. Never add `/dashboard/*`, `/api/*`, or `/invite/*` to the sitemap.
+Only public routes should be indexable: `/`, `/guide`, `/sponsors`, `/privacy`, `/terms`, `/license`, and any future marketing/content pages. Never add `/dashboard/*`, `/api/*`, or `/invite/*` to the sitemap.
 
 ## What is already implemented
 
@@ -20,7 +20,8 @@ Only public routes should be indexable: `/`, and any future marketing/content pa
 - `src/app/login/layout.tsx`: login page is `noindex`.
 - `src/app/dashboard/layout.tsx`: dashboard is `noindex, nofollow`.
 - `public/icon.svg`: favicon.
-- `public/llms.txt`: concise site summary for AI crawlers.
+- `public/llms.txt`: concise site summary for AI crawlers, including the public guide and policy pages.
+- `_new public pages`: `/guide`, `/sponsors`, `/privacy`, `/terms`, and `/license` use `PublicPageShell` and are listed in `sitemap.ts`.
 
 ## Checklist for a new public page
 
