@@ -14,6 +14,8 @@
 
 Duplicate runs for the same ref are cancelled automatically. Dependabot opens weekly update PRs for npm packages and GitHub Actions. Major npm updates are ignored because they need deliberate migration work; security updates are handled separately.
 
+Pull requests use `.github/PULL_REQUEST_TEMPLATE.md`. It asks for a summary, test steps, and review checks for secrets, auth placement, shared schemas, translations, accessibility, SEO, database changes, and the manual deployment step.
+
 ## Continuous delivery
 
 The live sites are currently deployed with the Vercel CLI. The Vercel projects are **not yet connected to GitHub**, so a `git push` does not trigger a deployment.
